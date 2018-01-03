@@ -48,9 +48,9 @@ f0=dfdy*y0;
 if Step_Size=='Y'
     h=0.01;
     g1=(f0+(h.*c1.*dfdt0))./norm(((1./(gam.*h)).*eye(7))-dfdy);
-    g2=2;
-    g3=3;
-    g4=4;
+    g2=(h.*c2.*dfdt0)+((c21*g1)/h);
+    g3=(h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h);
+    g4=(h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3))/h);
     eps=1E-6;
     err=(e1*g1)+(e2*g2)+(e3*g3)+(e4*g4);
     yscale=abs(y0)+abs(h.*f0)+1E-30;
@@ -64,9 +64,9 @@ if Step_Size=='Y'
 elseif Step_Size=='N'
     h=str2double(cell2mat(co2(18)));
     g1=(f0+(h*c1*dfdt0))/(((1/(gam*h))*eye(7))-dfdy);
-    g2=2;
-    g3=3;
-    g4=4;
+    g2=(h.*c2.*dfdt0)+((c21*g1)/h);
+    g3=(h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h);
+    g4=(h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3))/h);
     else
         disp('Automatic Step Size should be indicated as Y or N only!')
 end
