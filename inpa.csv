@@ -1,0 +1,20 @@
+Benchmark 1
+---------------------
+Test Name,   TR zigzag
+Initial Condition n(0),  1.0
+Average Neutron Generation Time,  1.00E-07
+---------------------
+Number of Reactivity Steps,  1
+Reactivity Steps,  0.0,
+rho(t),  0.0022
+d(rho(t))/dt,  0
+---------------------
+Number of Delayed Neutron Groups,  6
+i-th group Delayed Neutron Fraction Beta(i),  0.0001672,  0.001232,  0.0009504,  0.001443,  0.0004534,  0.000154
+Total Delayed Neutron Fraction Beta,  0.0044
+i-th group Decay Constant Lambda(i),  0.0129,  0.0311,  0.134, 0.331,  1.26,  3.21
+---------------------
+Automatic Step Size (Y for Yes/N for No),  Y
+fixed step size (used if automatic step size is No),  0.03
+number of interested points,  3
+interested points,  0.1,  1.0,  10.0
