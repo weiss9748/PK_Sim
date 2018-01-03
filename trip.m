@@ -11,7 +11,7 @@ co13=inp{1,13};
 co=[co1,co2,co3,co4,co5,co6,co7,co8,co9,co10,co11,co12,co13];
 
 %constants
-gam=1/2; a21=2; a31=48/25; c21=-8.0; c31=372/25; c32=12/5; c41=-112/125; 
+gam=1/2; a21=2; a31=48/25; c21=-8.0; c31=372/25; c32=12/5; c41=-112/125;
 c42=-54/125; c43=-2/5; b1=19/9; b2=1/2; b3=25/108; b4=125/108;
 e1=17/54; e2=7/36; e3=0; e4=125/108;
 c1=1/2; c2=-3/2; c3=121/50; c4=29/250;
@@ -33,29 +33,34 @@ Step_Size=cell2mat(co2(17));
 NIntr=str2num(cell2mat(co2(19))); %number of interest points
 IPts=str2double(co(20,2:NIntr+1)); %interest pts
 
-dfdy=[((rho-Beta)/A) La; (B(1)/A) -La; 
-    (B(2)/A) -La; 
-    (B(3)/A) -La; 
-    (B(4)/A) -La; 
-    (B(5)/A) -La; 
+dfdy=[((rho-Beta)/A) La; (B(1)/A) -La;
+    (B(2)/A) -La;
+    (B(3)/A) -La;
+    (B(4)/A) -La;
+    (B(5)/A) -La;
     (B(6)/A) -La];
 dfdt0=[((drho*n0)/A);0;0;0;0;0;0];
 C0=((B./(A.*La)).*n0).';
 y0=[n0;C0];
 f0=dfdy*y0;
+I=eye(7);
+h=0.01;
 
-
+while h<max(IPts)
 if Step_Size=='Y'
-    h=0.01;
-    g1=(f0+(h.*c1.*dfdt0))./norm(((1./(gam.*h)).*eye(7))-dfdy);
-    g2=(h.*c2.*dfdt0)+((c21*g1)/h);
-    g3=(h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h);
-    g4=(h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3))/h);
+    [a,b,c]=lu(((1./(gam.*h)*I))-dfdy);
+    g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)*I))-dfdy);
+    g2=((h.*c2.*dfdt0)+((c21*g1)/h))/norm(a);
+    g3=((h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h))/norm(b);
+    g4=((h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3)))/h)/norm(c);
     eps=1E-6;
     err=(e1*g1)+(e2*g2)+(e3*g3)+(e4*g4);
-    yscale=abs(y0)+abs(h.*f0)+1E-30;
+    yscale=abs(y0)+abs(h.*f0)+tiny;
     errmax=max(abs(err./yscale));
     h=max([(0.9*h*(errmax^(-1/3))), 0, 5*h]);
+    y=y0+((b1*g1)+(b2*g2)+(b3*g3)+(b4*g4))
+%     y(IPts)=y0
+%     y(t0+h)=y0+((b1*g1)+(b2*g2)+(b3*g3)+(b4*g4));
     if errmax>0.1296
         h=0.9*h*(errmax^-0.25);
     else
@@ -63,10 +68,11 @@ if Step_Size=='Y'
     end
 elseif Step_Size=='N'
     h=str2double(cell2mat(co2(18)));
-    g1=(f0+(h*c1*dfdt0))/(((1/(gam*h))*eye(7))-dfdy);
+    g1=(f0+(h*c1*dfdt0));
     g2=(h.*c2.*dfdt0)+((c21*g1)/h);
     g3=(h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h);
     g4=(h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3))/h);
-    else
-        disp('Automatic Step Size should be indicated as Y or N only!')
+else
+    disp('Automatic Step Size should be indicated as Y or N only!')
+end
 end
