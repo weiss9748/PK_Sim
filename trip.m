@@ -1,5 +1,5 @@
 clear; clf; close all; clc
-
+tic
 input= fopen('inpa.csv');
 inp=textscan(input,'%s %s %s %s %s %s %s %s %s %s %s %s %s','Delimiter',',');
 
@@ -128,3 +128,5 @@ elseif Step_Size=='N'
 else
     disp('Automatic Step Size should be indicated as Y or N only!')
 end
+
+fprintf('CPU Time: %f \n',toc)
