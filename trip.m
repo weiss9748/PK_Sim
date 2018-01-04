@@ -129,4 +129,5 @@ else
     disp('Automatic Step Size should be indicated as Y or N only!')
 end
 
-fprintf('CPU Time: %f \n',toc)
+comptime=toc;
+fprintf('CPU Time: %f \n',comptime)
