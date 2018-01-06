@@ -98,8 +98,8 @@ ylabel('C_i(t)')
 %step size (h) determination, g and y column vectors calculations start
 if Step_Size=='Y' %if automatic stepsize is set to Y, it is on
     while t<max(IPts) %while the time the calculation is on is less than the maximum of the interest points
-        [a,b,c]=lu(((1./(gam.*h)*I))-dfdy); %LU decompisition of LHS of eqns 3 in the paper, based on h=0.01
-        g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)*I))-dfdy); %g1 initial calculation
+        [a,b,c]=lu(((1./(gam.*h)))-dfdy); %LU decompisition of LHS of eqns 3 in the paper, based on h=0.01
+        g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)))-dfdy); %g1 initial calculation
         g2=((h.*c2.*dfdt0)+((c21*g1)/h))/norm(a); %g2 initial calculation
         g3=((h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h))/norm(b);%g3 initial calculation
         g4=((h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3)))/h)/norm(c); %g4 initial calculation
@@ -109,8 +109,8 @@ if Step_Size=='Y' %if automatic stepsize is set to Y, it is on
         errmax=max(abs(err./yscale)); %initial maximum error of the y vector
         if errmax>eps %if the initial maximum error of the y vector is greater than epsilon
             while errmax>eps %repeat the following steps until errmax is less than epsilon
-                [a,b,c]=lu(((1./(gam.*h)*I))-dfdy); %LU decompisition based on recent h
-                g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)*I))-dfdy); %new g1
+                [a,b,c]=lu(((1./(gam.*h)))-dfdy); %LU decompisition based on recent h
+                g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)))-dfdy); %new g1
                 g2=((h.*c2.*dfdt0)+((c21*g1)/h))/norm(a); %new g2
                 g3=((h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h))/norm(b); %new g3
                 g4=((h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3)))/h)/norm(c); %new g4
@@ -127,13 +127,13 @@ if Step_Size=='Y' %if automatic stepsize is set to Y, it is on
             if errmax>0.1296 %if the errmax is greater than 0.1296 do following steps, otherwise, skip to the else statement
                 for g=1:max(IPts) %repeat as many times as the maximum of the interest points
                     h=0.9*h*(errmax^-0.25);  %calculating h_next
-                    [a,b,c]=lu(((1./(gam.*h)*I))-dfdy); %LU decompisition again but with new h
-                    g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)*I))-dfdy); %new g1
+                    [a,b,c]=lu(((1./(gam.*h)))-dfdy); %LU decompisition again but with new h
+                    g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)))-dfdy); %new g1
                     g2=((h.*c2.*dfdt0)+((c21*g1)/h))/norm(a); %new g2
                     g3=((h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h))/norm(b); %new g3
                     g4=((h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3)))/h)/norm(c); %new g4
                     y=[y0+((b1*g1)+(b2*g2)+(b3*g3)+(b4*g4))] %new y
-                    t=t+h; %time recorded at the calculated y
+                    t=t+h %time recorded at the calculated y
                     n=y(1); %neutron density at calculated time, n(t)
                     C1=y(2); %delayed neutron precursor density of 1st group
                     C2=y(3); %... of 2nd group
@@ -165,8 +165,8 @@ if Step_Size=='Y' %if automatic stepsize is set to Y, it is on
             else
                 for g=1:max(IPts) %same condition as previous for loop
                     h=1.5*h; %new h, h_next
-                    [a,b,c]=lu(((1./(gam.*h)*I))-dfdy); %same steps as previous for loop
-                    g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)*I))-dfdy);
+                    [a,b,c]=lu(((1./(gam.*h)))-dfdy); %same steps as previous for loop
+                    g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)))-dfdy);
                     g2=((h.*c2.*dfdt0)+((c21*g1)/h))/norm(a);
                     g3=((h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h))/norm(b);
                     g4=((h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3)))/h)/norm(c);
@@ -206,8 +206,8 @@ if Step_Size=='Y' %if automatic stepsize is set to Y, it is on
 elseif Step_Size=='N'
     h=str2double(cell2mat(co2(18)));
     for g=1:max(IPts) %same condition as previous for loop
-        [a,b,c]=lu(((1./(gam.*h)*I))-dfdy); %same steps as previous for loop
-        g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)*I))-dfdy);
+        [a,b,c]=lu(((1./(gam.*h)))-dfdy); %same steps as previous for loop
+        g1=(f0+(h.*c1.*dfdt0))/norm(((1./(gam.*h)))-dfdy);
         g2=((h.*c2.*dfdt0)+((c21*g1)/h))/norm(a);
         g3=((h.*c3.*dfdt0)+(((c31*g1)+(c32*g2))/h))/norm(b);
         g4=((h.*c4.*dfdt0)+(((c41*g1)+(c42*g2)+(c43*g3)))/h)/norm(c);
