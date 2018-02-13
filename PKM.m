@@ -1,4 +1,4 @@
-%function PKM
+function PKM
 clear; clf;close all; clc
 
 disp('--------------------------------------------------------------------------------------------------------------')
@@ -43,48 +43,23 @@ NGr=str2double(cell2mat(co2(13))); %number of neutron groups
 B=str2double(co(14,2:NGr+1)); %delayed neutron fraction of each group
 Beta=sum(B); %Total delayed neutron fraction
 La=str2double(co(16,2:NGr+1)); %decay constants
-Step_Size=cell2mat(co2(18)); %auto step size response (Y or N)
-NIntr=str2double(cell2mat(co2(20))); %number of interest points
-IPts=str2double(co(21,2:NIntr+1)); %interest pts
+NIntr=str2double(cell2mat(co2(18))); %number of interest points
+IPts=str2double(co(19,2:NIntr+1)); %interest pts
+fclose all;
 
-increment=0.01;
-ti=(0:increment:max(IPts)); %time vector for the simulation
+ti=(0:0.01:max(IPts)); %time vector for the simulation
 C0=((B./(A.*La)).*n0).'; %initial delayed neutron precursor densities for all the groups
 y0=[n0;C0]; %initial y column vector
 tip=zeros(1,length(ti)*max(rxnum));
 rhot=zeros(1,length(ti)*max(rxnum));
-g=0;
-i=1;
 
-
-if rxnum>1 % the if rxnum part is under development
-    while max(tip)<max(IPts)
-        g=g+1
-        ix = find(IPts>=tip(i),1);
-        while tip(i)<IPts(ix);
-            rhot(i)=double(subs(rho(g),tip(i)));
-            tip(i)=tip(i)+increment;
-            i=i+1;
-        end
-    end
-    [t,y]=ode23s(@(t,y) [((rhot(tip==t)-Beta)/A) La;
-        (B(1)/A) -La(1) 0 0 0 0 0;
-        (B(2)/A) 0 -La(2) 0 0 0 0;
-        (B(3)/A) 0 0 -La(3) 0 0 0;
-        (B(4)/A) 0 0 0 -La(4) 0 0;
-        (B(5)/A) 0 0 0 0 -La(5) 0;
-        (B(6)/A) 0 0 0 0 0 -La(6)]*y,ti,y0); %solving the stiff ODE
-elseif rxnum<1
-    disp('Number of reactivity steps must be greater than 1')
-else
-    [t,y]=ode23s(@(t,y) [((double(subs(rho,t))-Beta)/A) La;
-        (B(1)/A) -La(1) 0 0 0 0 0;
-        (B(2)/A) 0 -La(2) 0 0 0 0;
-        (B(3)/A) 0 0 -La(3) 0 0 0;
-        (B(4)/A) 0 0 0 -La(4) 0 0;
-        (B(5)/A) 0 0 0 0 -La(5) 0;
-        (B(6)/A) 0 0 0 0 0 -La(6)]*y,ti,y0); %solving the stiff ODE
-end
+[t,y]=ode23s(@(t,y) [((double(subs(rho,t))-Beta)/A) La;
+    (B(1)/A) -La(1) 0 0 0 0 0;
+    (B(2)/A) 0 -La(2) 0 0 0 0;
+    (B(3)/A) 0 0 -La(3) 0 0 0;
+    (B(4)/A) 0 0 0 -La(4) 0 0;
+    (B(5)/A) 0 0 0 0 -La(5) 0;
+    (B(6)/A) 0 0 0 0 0 -La(6)]*y,ti,y0); %solving the stiff ODE
 
 %figure for the neutron density (n) graph
 FIG1=figure('Name','Neutron Density','NumberTitle','off');
@@ -109,11 +84,14 @@ hold off
 
 dor=zeros(length(IPts),NGr+2);
 for i=1:length(IPts)
-    dire=find(t==IPts(i));
+    dire= t==IPts(i);
     dor(i,2:end)=y(dire,:);
 end
 dor(:,1)=IPts';
+format bank
 disp(dor)
 
 toc %ends the timer for CPU time
-%end
+diary('PKOut.txt')
+diary off
+end
